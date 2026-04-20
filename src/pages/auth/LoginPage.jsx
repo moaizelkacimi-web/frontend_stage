@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import bgImage from "../../images/cnrst-image.jpg";
-// Si ton fichier s'appelle encore cnrst.image.jpg, remplace la ligne ci-dessus par :
-// import bgImage from "../../images/cnrst.image.jpg";
+
 
 export default function LoginPage() {
   const { login, isAuthenticated } = useAuth();
@@ -16,6 +14,7 @@ export default function LoginPage() {
 
   const [errorMessage, setErrorMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -41,32 +40,19 @@ export default function LoginPage() {
   };
 
   if (isAuthenticated) {
-    navigate("/dashboard");
-    return null;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `url(${bgImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      />
-
-      <div className="absolute inset-0 bg-black/50" />
-
+    <div className="app-background login-background relative min-h-screen w-full overflow-hidden">
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-8">
-        <div className="w-full max-w-md rounded-2xl border border-white/20 bg-white/12 p-8 shadow-2xl backdrop-blur-md">
+        <div className="w-full max-w-md rounded-2xl border border-white/25 bg-white/10 p-8 shadow-2xl backdrop-blur-sm">
           <div className="mb-8 text-center">
             <h1 className="text-4xl font-bold tracking-tight text-white">
               Connexion
             </h1>
             <p className="mt-2 text-sm text-gray-200">
-              Application de gestion RGPD - CNRST
+              CNRST Data Protection System
             </p>
           </div>
 
@@ -97,7 +83,7 @@ export default function LoginPage() {
                 Mot de passe
               </label>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
@@ -105,6 +91,15 @@ export default function LoginPage() {
                 className="w-full rounded-xl border border-white/25 bg-white/15 px-4 py-3 text-white placeholder:text-gray-300 outline-none transition focus:border-blue-300 focus:bg-white/20 focus:ring-2 focus:ring-blue-400/40"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((current) => !current)}
+                className="mt-2 text-sm font-semibold text-blue-100 transition hover:text-white"
+              >
+                {showPassword
+                  ? "Cacher le mot de passe"
+                  : "Afficher le mot de passe"}
+              </button>
             </div>
 
             <button
@@ -117,6 +112,11 @@ export default function LoginPage() {
           </form>
         </div>
       </div>
+
+      <p className="absolute bottom-4 left-1/2 z-10 w-[calc(100%-2rem)] max-w-4xl -translate-x-1/2 text-center text-xs leading-5 text-white/80">
+        © 2026 CNRST DPS — Tous droits réservés. Centre National pour la
+        Recherche Scientifique et Technique (CNRST), Rabat - Hay Riad, Maroc.
+      </p>
     </div>
   );
 }

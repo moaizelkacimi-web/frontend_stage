@@ -11,3 +11,41 @@ body,
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.app-background {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.app-background::before {
+  content: "";
+  position: fixed;
+  inset: -18px;
+  z-index: -2;
+  background-image: url("./images/cnrst-image.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(4px);
+  transform: scale(1.02);
+}
+
+.app-background::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(248, 250, 252, 0.76);
+}
+
+.login-background::before {
+  inset: 0;
+  filter: none;
+  transform: none;
+}
+
+.login-background::after {
+  background: rgba(15, 23, 42, 0.42);
+}

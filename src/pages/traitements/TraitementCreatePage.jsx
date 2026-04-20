@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
-import TraitementForm from "../../components/traitements/TraitementForm";
+import Alert from "../../components/common/Alert";
+import Card from "../../components/common/Card";
+import Loader from "../../components/common/Loader";
+import TraitementForm from "./TraitementForm";
 
 export default function TraitementCreatePage() {
   const navigate = useNavigate();
@@ -14,12 +17,14 @@ export default function TraitementCreatePage() {
 
     try {
       await api.post("/api/traitements", formData);
-      navigate("/traitements");
+      navigate("/traitements", {
+        state: { successMessage: "Fiche créée avec succès" },
+      });
     } catch (error) {
       console.error(error);
       setServerError(
         error.response?.data?.message ||
-          "Erreur lors de la création de la fiche."
+          "Erreur lors de la création"
       );
     } finally {
       setSubmitting(false);
@@ -27,25 +32,30 @@ export default function TraitementCreatePage() {
   };
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
+    <div className="space-y-8">
+      <div>
+        <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+          Registre RGPD
+        </p>
+        <h1 className="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl">
           Nouvelle fiche de traitement
         </h1>
-        <p className="mt-1 text-gray-600">
-          Créer une nouvelle fiche conforme au registre RGPD
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
+          Renseignez les informations essentielles avant la validation.
         </p>
       </div>
 
       {serverError && (
-        <div className="mb-4 rounded-xl bg-red-100 px-4 py-3 text-red-700">
-          {serverError}
-        </div>
+        <Alert type="error">{serverError}</Alert>
       )}
 
-      <div className="rounded-2xl bg-white p-6 shadow">
-        <TraitementForm onSubmit={handleCreate} submitting={submitting} />
-      </div>
+      <Card className="p-6 sm:p-8">
+        {submitting ? (
+          <Loader label="Création de la fiche en cours..." />
+        ) : (
+          <TraitementForm onSubmit={handleCreate} submitting={submitting} />
+        )}
+      </Card>
     </div>
   );
 }

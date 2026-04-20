@@ -1,3 +1,5 @@
+import Button from "./Button";
+
 export default function Pagination({ currentPage, lastPage, onPageChange }) {
   if (!lastPage || lastPage <= 1) return null;
 
@@ -7,36 +9,47 @@ export default function Pagination({ currentPage, lastPage, onPageChange }) {
   }
 
   return (
-    <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="rounded-lg border px-3 py-2 text-sm disabled:opacity-50"
-      >
-        Précédent
-      </button>
+    <div className="flex flex-wrap items-center justify-between gap-4 border-t border-gray-200 bg-gray-50 px-6 py-4">
+      <p className="text-sm font-medium text-gray-600">
+        Page {currentPage} sur {lastPage}
+      </p>
 
-      {pages.map((page) => (
-        <button
-          key={page}
-          onClick={() => onPageChange(page)}
-          className={`rounded-lg px-3 py-2 text-sm ${
-            currentPage === page
-              ? "bg-blue-600 text-white"
-              : "border bg-white text-gray-700"
-          }`}
+      <div className="flex flex-wrap items-center gap-2">
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
         >
-          {page}
-        </button>
-      ))}
+          Precedent
+        </Button>
 
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === lastPage}
-        className="rounded-lg border px-3 py-2 text-sm disabled:opacity-50"
-      >
-        Suivant
-      </button>
+        {pages.map((page) => (
+          <button
+            key={page}
+            type="button"
+            onClick={() => onPageChange(page)}
+            className={`h-10 min-w-10 rounded-xl px-3 text-sm font-semibold transition focus:outline-none focus:ring-4 focus:ring-blue-100 ${
+              currentPage === page
+                ? "bg-blue-700 text-white"
+                : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === lastPage}
+        >
+          Suivant
+        </Button>
+      </div>
     </div>
   );
 }

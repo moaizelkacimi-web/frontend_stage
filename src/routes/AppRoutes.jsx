@@ -2,13 +2,15 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import LoginPage from "../pages/auth/LoginPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
-import TraitementsListPage from "../pages/traitements/TraitementListPage";
+import TraitementsListPage from "../pages/traitements/TraitementsListPage";
 import TraitementCreatePage from "../pages/traitements/TraitementCreatePage";
 import TraitementEditPage from "../pages/traitements/TraitementEditPage";
 import TraitementShowPage from "../pages/traitements/TraitementShowPage";
 import UnauthorizedPage from "../pages/errors/UnauthorizedPage";
 import NotFoundPage from "../pages/errors/NotFoundPage";
-
+import UsersPage from "../pages/users/UsersPage";
+import CreateUserPage from "../pages/users/CreateUserPage";
+import ProfilePage from "../pages/users/ProfilePage";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import RoleRoute from "../components/common/RoleRoute";
 import MainLayout from "../components/layout/MainLayout";
@@ -26,6 +28,28 @@ export default function AppRoutes() {
             <ProtectedRoute>
               <MainLayout>
                 <DashboardPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <ProfilePage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <ProfilePage />
               </MainLayout>
             </ProtectedRoute>
           }
@@ -77,6 +101,31 @@ export default function AppRoutes() {
               <RoleRoute allowedRoles={["CPD", "DAG"]}>
                 <MainLayout>
                   <TraitementEditPage />
+                </MainLayout>
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+                <Route
+          path="/users"
+          element={
+            <ProtectedRoute>
+              <RoleRoute allowedRoles={["CPD"]}>
+                <MainLayout>
+                  <UsersPage />
+                </MainLayout>
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/users/create"
+          element={
+            <ProtectedRoute>
+              <RoleRoute allowedRoles={["CPD"]}>
+                <MainLayout>
+                  <CreateUserPage />
                 </MainLayout>
               </RoleRoute>
             </ProtectedRoute>

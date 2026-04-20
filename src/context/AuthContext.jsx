@@ -1,4 +1,3 @@
-// src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import api from "../api/axios";
 
@@ -8,31 +7,46 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Vérifier si l'utilisateur est déjà connecté
   const getUser = async () => {
+    if (!localStorage.getItem("token")) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await api.get("/api/user");
       setUser(res.data);
-    } catch (error) {
+    } catch {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       setUser(null);
     } finally {
       setLoading(false);
     }
   };
 
-  // Login
   const login = async (formData) => {
     try {
-     
-      await api.get("/sanctum/csrf-cookie");
+      const loginResponse = await api.post("/login", formData);
 
-      await api.post("/login", formData);
-
-      const res = await api.get("/api/user");
-      setUser(res.data);
+      localStorage.setItem("token", loginResponse.data.token);
+      localStorage.setItem("user", JSON.stringify(loginResponse.data.user));
+      setUser(loginResponse.data.user);
 
       return { success: true };
     } catch (error) {
+      console.error("Erreur login :", error);
+
+      if (!error.response) {
+        return {
+          success: false,
+          errors: null,
+          message:
+            "Impossible de joindre le backend. Vérifiez que Laravel tourne sur http://127.0.0.1:8000.",
+        };
+      }
+
       return {
         success: false,
         errors: error.response?.data?.errors || null,
@@ -41,13 +55,15 @@ export function AuthProvider({ children }) {
     }
   };
 
-  
   const logout = async () => {
     try {
       await api.post("/logout");
-      setUser(null);
     } catch (error) {
       console.error("Erreur logout :", error);
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setUser(null);
     }
   };
 
